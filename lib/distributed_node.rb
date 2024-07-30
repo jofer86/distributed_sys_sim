@@ -1,24 +1,26 @@
 # frozen_string_literal: true
 
+require_relative 'message_handler'
+require_relative 'partition_handler'
+require_relative 'logger'
+
 # The DistributedNode class simulates a node in a distributed system
 # that participates in a consensus algorithm (like Raft). Each node
 # can send and receive messages, propose new states, and handle
 # log replication. The class also supports leader election and
 # maintains an activity log for state transitions and messages.
-require_relative 'message_handler'
-require_relative 'partition_handler'
-require_relative 'logger'
-
 class DistributedNode
   include MessageHandler
   include PartitionHandler
   include Logger
 
-  attr_reader :identifier, :peers, :current_state, :term, :voted_for, :log_entries, :role, :active
+  attr_reader :id, :peers, :current_state, :term, :voted_for, :log_entries, :role, :active
 
-  # @param identifier [Integer] the unique identifier for the node
-  def initialize(identifier)
-    @identifier = identifier          # Unique identifier for the node
+  # Initialize a node with a unique id
+  #
+  # @param id [Integer] the unique id for the node
+  def initialize(id)
+    @id = id                          # Unique id for the node
     @peers = []                       # List of neighboring nodes (peers)
     @current_state = nil              # Current state of the node
     @activity_log = []                # Log to record messages and state transitions
@@ -30,12 +32,17 @@ class DistributedNode
   end
 
   # @param node [DistributedNode] the peer node to be added
-  def register_peer(node)
+  def add_neighbour(node)
     @peers << node unless @peers.include?(node)
   end
 
+  # @param node [DistributedNode] the peer node to be removed
+  def remove_peer(node)
+    @peers.delete(node)
+  end
+
   # @param new_state [Object] the new state to propose
-  def suggest_state(new_state)
+  def propose_state(new_state)
     @current_state = new_state
     record_activity("Suggested new state: #{@current_state}")
     @log_entries << { term: @term, state: @current_state }
@@ -50,7 +57,7 @@ class DistributedNode
     return unless @active
 
     @term += 1
-    @voted_for = @identifier
+    @voted_for = @id
     @role = :candidate
     @votes = 1
     record_activity("Started election for term #{@term}")

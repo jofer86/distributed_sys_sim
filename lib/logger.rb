@@ -4,7 +4,8 @@
 # Provides a method to retrieve the activity log.
 module Logger
   def record_activity(activity)
-    @activity_log << activity
+    timestamp = Time.now.strftime('%Y-%m-%d %H:%M:%S')
+    @activity_log << "[#{timestamp}] #{activity}"
   end
 
   def retrieve_activity_log
