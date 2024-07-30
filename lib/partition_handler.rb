@@ -2,6 +2,7 @@
 
 # Handles failures and partitions.
 module PartitionHandler
+  # @param [DistributedNodes] array of nodes so that we can incommunicate one.
   def simulate_partition(partitioned_nodes)
     partitioned_nodes.each do |node|
       remove_peer(node)

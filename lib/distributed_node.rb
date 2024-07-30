@@ -16,8 +16,6 @@ class DistributedNode
 
   attr_reader :id, :peers, :current_state, :term, :voted_for, :log_entries, :role, :active
 
-  # Initialize a node with a unique id
-  #
   # @param id [Integer] the unique id for the node
   def initialize(id)
     @id = id                          # Unique id for the node

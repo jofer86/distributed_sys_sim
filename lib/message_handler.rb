@@ -3,6 +3,8 @@
 # The message handler module is in charge to handle comunications between peer nodes.
 # Manages vote requests, vote responses, and log replication (append entries).
 module MessageHandler
+  # @param target_node [DistributedNode] The node to which the message will be sent.
+  # @param message [Hash] The message to be transmitted.
   def transmit_message(target_node, message)
     return unless @active
 
@@ -15,6 +17,8 @@ module MessageHandler
     record_activity("Transmitted #{format_message(message)} to Node #{target_node.id}")
   end
 
+  # @param from_node [DistributedNode] The node from which the message was received.
+  # @param message [Hash] The message that was received.
   def receive_message(from_node, message)
     return unless @active
 
@@ -22,6 +26,8 @@ module MessageHandler
     handle_message(from_node, message)
   end
 
+  # @param from_node [DistributedNode] The node from which the message was received.
+  # @param message [Hash] The message that was received.
   def handle_message(from_node, message)
     case message[:type]
     when 'vote_request'
