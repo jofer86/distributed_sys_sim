@@ -1,3 +1,6 @@
+# frozen_string_literal: true
+
+# Handles failures and partitions.
 module PartitionHandler
   def simulate_partition(partitioned_nodes)
     partitioned_nodes.each do |node|
